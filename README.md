@@ -75,8 +75,7 @@ pip install -r requirements.txt
 Include a GIF below showing the tracking and prediction outputs:
 
 **Tracking and Prediction Visualization**  
-![Demo GIF here](Path_to_your_GIF.gif)
-
+![Demo GIF here](outputs/videos/output_visualized.gif)
 
 ---
 
