@@ -1,0 +1,16 @@
+ball_model_path: "models/ball_best.pt"
+player_model_path: "models/player_best.pt"
+action_model_path: "models/action_best.pt"
+
+ball_data: "outputs/tracking_data/ball.json"
+player_data: "outputs/tracking_data/player.json"
+action_data: "outputs/action_data/action.json"
+
+video_path: "inputs/input_video.mp4"
+output_dir: "outputs/videos"
+action_classes:
+  - block
+  - defense
+  - serve
+  - set
+  - spike
