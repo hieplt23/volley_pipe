@@ -8,6 +8,9 @@ action_data: "outputs/action_data/action.json"
 
 video_path: "inputs/input_video.mp4"
 output_dir: "outputs/videos"
+
+mask_path: "inputs/mask.png"
+
 action_classes:
   - block
   - defense

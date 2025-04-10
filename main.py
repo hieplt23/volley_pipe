@@ -18,4 +18,3 @@ if __name__ == '__main__':
     # Run pipeline
     pipeline = VolleyballPipeline(config)
     pipeline.run()
-

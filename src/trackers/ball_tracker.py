@@ -11,7 +11,7 @@ MAX_HISTORY = 5
 MAX_MISSED_THRESHOLD = 5
 
 class BallTracker:
-    def __init__(self, model_path, video_path,
+    def __init__(self, model_path, video_path, mask_path,
                  max_history=MAX_HISTORY, max_missed_threshold=MAX_MISSED_THRESHOLD):
         # load YOLO model and set basic attributes
         self.model = YOLO(model_path)
@@ -56,7 +56,7 @@ class BallTracker:
 
     def detect_ball(self, frame):
         # detect ball in the frame using YOLO
-        results = self.model.predict(source=frame, imgsz=640, conf=0.35, verbose=False)
+        results = self.model.predict(source=frame, imgsz=640, conf=0.30, verbose=False)
 
         if results and len(results[0].boxes) > 0:
             box = results[0].boxes[0]
@@ -91,7 +91,7 @@ class BallTracker:
         self.frame_height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
 
         # process each frame with progress bar
-        with tqdm(total=num_frames, desc='Ball tracking: Processing video...', colour='cyan') as pbar:
+        with tqdm(total=num_frames, desc='Ball tracking | Processing video...', colour='cyan') as pbar:
             frame_id = 0
             while True:
                 ret, frame = cap.read()
