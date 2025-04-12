@@ -1,17 +1,19 @@
 import cv2
 from src.utils.io import save_json_data
+from src.utils.img_utils import foot_pos, load_mask
 import os
 import json
 from ultralytics import YOLO
 from tqdm import tqdm
 
 class PlayerTracker:
-    def __init__(self, model_path, video_path):
+    def __init__(self, model_path, video_path, mask_path=None):
         # load YOLO model and set basic attributes
         self.model = YOLO(model_path)
+        self.mask = load_mask(mask_path)
         self.video_path = video_path
         self.output_dir = "outputs/tracking_data"
-        self.tracking_data = {"players": {}}  # store tracking data for players
+        self.tracking_data = {"player": {}}  # store tracking data for players
         self.frame_width = 640
 
         # create output directory if it doesn't exist
@@ -28,9 +30,10 @@ class PlayerTracker:
         cap = cv2.VideoCapture(self.video_path)
         frame_id = 0
         num_frames = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
+        self.frame_width = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
 
         # process each frame with progress bar
-        with tqdm(total=num_frames, desc='Player tracking: Processing video...', colour='cyan') as pg_barr:
+        with tqdm(total=num_frames, desc='Player tracking | Processing video...', colour='cyan') as pg_barr:
             while cap.isOpened():
                 ret, frame = cap.read()
                 if not ret:
@@ -38,7 +41,7 @@ class PlayerTracker:
 
                 # detect and track players in current frame
                 player_info = self.detect_and_track_players(frame, self.frame_width)
-                self.tracking_data["players"][frame_id] = player_info
+                self.tracking_data["player"][frame_id] = player_info
 
                 frame_id += 1
                 pg_barr.update(1)
@@ -68,11 +71,17 @@ class PlayerTracker:
             track_ids = result.boxes.id.cpu().numpy()
             confidences = result.boxes.conf.cpu().numpy()
 
-            for i, (bbox, track_id, confidence) in enumerate(zip(boxes, track_ids, confidences)):
+            for bbox, track_id, confidence in zip(boxes, track_ids, confidences):
                 bbox = bbox.tolist()
                 center = [(bbox[0] + bbox[2]) / 2, (bbox[1] + bbox[3]) / 2]
+                track_id = track_id.item()
 
-                player_info[track_id] = {
+                # foot position
+                foot_pos_x, foot_pos_y = foot_pos(bbox)
+                if self.mask[int(foot_pos_y-1), int(foot_pos_x-1)] == 0:  # check if player not in field
+                    continue
+
+                player_info[int(track_id)] = {
                     "bbox": bbox,
                     "center": center
                 }

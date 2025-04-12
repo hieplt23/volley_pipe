@@ -3,23 +3,27 @@ from src.trackers.ball_tracker import BallTracker
 from src.predictors.action_predictor import ActionPredictor
 import cv2
 import os
+import numpy as np
+
 
 class VolleyballPipeline:
     def __init__(self, config):
         self.config = config
-        self.ball_tracker = BallTracker(self.config["ball_model_path"], self.config["video_path"])
-        self.player_tracker = PlayerTracker(self.config["player_model_path"], self.config["video_path"])
-        self.action_predictor = ActionPredictor(self.config["action_model_path"], self.config["video_path"], action_classes=self.config["action_classes"])
+        self.ball_tracker = BallTracker(self.config["ball_model_path"], self.config["video_path"],
+                                        self.config['mask_path'])
+        self.player_tracker = PlayerTracker(self.config["player_model_path"], self.config["video_path"],
+                                        self.config['mask_path'])
+        self.action_predictor = ActionPredictor(self.config["action_model_path"], self.config["video_path"],
+                                                action_classes=self.config["action_classes"], mask_path=self.config['mask_path'])
 
     def run(self):
         """Run the full pipeline: track ball, track players, predict actions."""
         ball_data = self.ball_tracker.process_video(json_path=self.config['ball_data'])
         player_data = self.player_tracker.process_video(json_path=self.config['player_data'])
         action_data = self.action_predictor.process_video(json_path=self.config['action_data'])
-        self.visualize(ball_data, player_data, action_data, save=True)
         return ball_data, player_data, action_data
 
-    def visualize(self, ball_data, player_data, action_data, save=False):
+    def visualize(self, ball_data, player_data, action_data, show=False, save=False):
         # visualize ball, players, and actions on video
         cap = cv2.VideoCapture(self.config["video_path"])
         frame_id = 0
@@ -71,6 +75,10 @@ class VolleyballPipeline:
                     center_x = (x_min + x_max) // 2
                     feet_y = y_max - 10
 
+                    # print track id for player
+                    # cv2.putText(overlay, f'ID: {track_id}', (x_min, y_min-5), fontFace=cv2.FONT_HERSHEY_SIMPLEX,
+                    #             color=(0, 255, 0), fontScale=1, thickness=3)
+
                     # draw ellipse at feet
                     axes = (int((x_max - x_min) * 0.4), int((x_max - x_min) * 0.2))
                     cv2.ellipse(overlay, (center_x, feet_y), axes, 5, -10, 224, (148, 0, 211), 8)
@@ -112,7 +120,6 @@ class VolleyballPipeline:
                         cv2.putText(overlay, action_text, text_pos,
                                     cv2.FONT_HERSHEY_SIMPLEX, 2, color, 2)  # colored text
 
-
             # blend overlay with frame
             alpha = 0.5  # 50% transparency
             frame = cv2.addWeighted(frame, 1 - alpha, overlay, alpha, 0)
@@ -122,9 +129,10 @@ class VolleyballPipeline:
                 out.write(frame)
 
             # display frame
-            cv2.imshow('Volleyball Visualization', cv2.resize(frame, (1200, 780)))
-            if cv2.waitKey(7) & 0xFF == ord('q'):
-                break
+            if show:
+                cv2.imshow('Volleyball Visualization', cv2.resize(frame, (1200, 780)))
+                if cv2.waitKey(7) & 0xFF == ord('q'):
+                    break
             frame_id += 1
 
         cap.release()

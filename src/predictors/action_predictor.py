@@ -4,8 +4,8 @@ import os
 import json
 from tqdm import tqdm
 from ultralytics import YOLO
-
 from src.utils.io import save_json_data
+from src.utils.img_utils import load_mask, foot_pos
 
 # constants for easy configuration
 DEFAULT_FRAME_WINDOW = 5  # number of frames to consider for action prediction
@@ -13,9 +13,10 @@ DEFAULT_FRAME_WINDOW = 5  # number of frames to consider for action prediction
 
 class ActionPredictor:
     def __init__(self, model_path, video_path,
-                 frame_window=DEFAULT_FRAME_WINDOW, action_classes=None):
+                 frame_window=DEFAULT_FRAME_WINDOW, action_classes=None, mask_path=None):
         # load action prediction model and set basic attributes
         self.model = YOLO(model_path) # placeholder for model loading
+        self.mask = load_mask(mask_path)
         self.video_path = video_path
         self.output_dir = "outputs/action_data"
         self.action_data = {'action': {}}  # store action predictions
@@ -38,7 +39,7 @@ class ActionPredictor:
         num_frames = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
 
         # process each frame with progress bar
-        with tqdm(total=num_frames, desc='Action: Processing video...', colour='cyan') as pg_barr:
+        with tqdm(total=num_frames, desc='Action | Processing video...', colour='cyan') as pg_barr:
             while cap.isOpened():
                 ret, frame = cap.read()
                 if not ret:
@@ -71,6 +72,12 @@ class ActionPredictor:
 
             for i, (bbox, cls) in enumerate(zip(boxes, classes)):
                 bbox = bbox.tolist()
+
+                # foot position
+                foot_pos_x, foot_pos_y = foot_pos(bbox)
+                if self.mask[int(foot_pos_y-1), int(foot_pos_x-1)] == 0:
+                    continue
+
                 cls = cls.tolist()
                 center = [(bbox[0] + bbox[2]) / 2, (bbox[1] + bbox[3]) / 2]
                 boxes_list.append(bbox)
