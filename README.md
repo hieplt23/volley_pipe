@@ -6,7 +6,7 @@ This project implements a **Volleyball Tracking and Action Recognition Pipeline*
 Key features:
 - **Player Tracking**: Detect and track players using YOLO and ByteTrack.
 - **Ball Tracking**: Detect and track the volleyball.
-- **Action Recognition**: Predict player actions such as "block", "defense", "serve", "set", and "spike".
+- **Action Recognition**: Predict player actions such as "block", "defense", "serve", "set" and "spike".
 - **Visualization**: Generate annotated videos with tracking and action predictions.
 
 ---
