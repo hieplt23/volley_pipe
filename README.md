@@ -69,15 +69,15 @@ pip install -r requirements.txt
 ## Usage
 Running the Pipeline
 1. **Prepare Input Files:**  
-- Place your video file in the ``inputs/`` directory.
-- Ensure the configuration file (``config/config.yaml``) is correctly set up.
+   - Place your video file in the ``inputs/`` directory.
+   - Ensure the configuration file (``config/config.yaml``) is correctly set up.
 2. **Run the Pipeline**: Execute the following command:
 ```python
 python main.py
 ```
 3. **Output:**
-- Tracking data will be saved in ``outputs/tracking_data/``.
-- Annotated videos will be saved in ``outputs/videos/``.
+   - Tracking data will be saved in ``outputs/tracking_data/``.
+   - Annotated videos will be saved in ``outputs/videos/``.
 ---
 
 ## Running with Docker
@@ -96,17 +96,17 @@ docker run --rm -v $(pwd)/inputs:/workspace/inputs -v $(pwd)/outputs:/workspace/
 ---
 Below is an example of the pipeline in action:  
 1. **Input Video**:  
-A volleyball match video is provided as input.
+   A volleyball match video is provided as input.
 2. **Output**:  
-Annotated video with:
-    - Player tracking (bounding boxes and IDs).
+   Annotated video with:
+    - Player tracking (bounding boxes).
     - Ball tracking (trajectory and position).
     - Action predictions (highlighted bounding boxes with action labels).
 ---
 
 ## Visualization
 The pipeline includes a visualization module to overlay tracking and action predictions on the video. Key features:  
-- **Player Tracking:** Players are highlighted with bounding boxes and IDs.
+- **Player Tracking:** Players are highlighted with bounding boxes.
 - **Ball Tracking:** The ball is tracked with a comet trail.
 - **Action Recognition:** Actions are displayed with bounding boxes and labels.
 To enable visualization:  
@@ -124,15 +124,15 @@ The pipeline is configured using a YAML file (``config/config.yaml``). Key param
 
 ## Example Pipeline Flow
 1. **Input Video**:  
-- A volleyball match video is loaded.
+   - A volleyball match video is loaded.
 2. **Player Tracking**:  
-- Players are detected and tracked frame-by-frame.
+   - Players are detected and tracked frame-by-frame.
 3. **Ball Tracking**:  
-- The ball's position and trajectory are determined.
+   - The ball's position and trajectory are determined.
 4. **Action Recognition**:  
-- Player actions are predicted based on their movements and positions.
+   - Player actions are predicted based on their movements and positions.
 5. **Visualization**:  
-- An annotated video is generated, showing tracking and action predictions.
+   - An annotated video is generated, showing tracking and action predictions.
 ---
 
 ## Future Work
