@@ -1,0 +1,5 @@
+PyYAML~=6.0.2
+opencv-python-headless==4.8.0.74
+ultralytics~=8.2.80
+tqdm~=4.67.1
+numpy~=1.26.4

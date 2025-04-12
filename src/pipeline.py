@@ -21,10 +21,9 @@ class VolleyballPipeline:
         ball_data = self.ball_tracker.process_video(json_path=self.config['ball_data'])
         player_data = self.player_tracker.process_video(json_path=self.config['player_data'])
         action_data = self.action_predictor.process_video(json_path=self.config['action_data'])
-        self.visualize(ball_data, player_data, action_data, save=False)
-        # return ball_data, player_data, action_data
+        return ball_data, player_data, action_data
 
-    def visualize(self, ball_data, player_data, action_data, save=False):
+    def visualize(self, ball_data, player_data, action_data, show=False, save=False):
         # visualize ball, players, and actions on video
         cap = cv2.VideoCapture(self.config["video_path"])
         frame_id = 0
@@ -77,8 +76,8 @@ class VolleyballPipeline:
                     feet_y = y_max - 10
 
                     # print track id for player
-                    cv2.putText(overlay, f'ID: {track_id}', (x_min, y_min-5), fontFace=cv2.FONT_HERSHEY_SIMPLEX,
-                                color=(0, 255, 0), fontScale=1, thickness=3)
+                    # cv2.putText(overlay, f'ID: {track_id}', (x_min, y_min-5), fontFace=cv2.FONT_HERSHEY_SIMPLEX,
+                    #             color=(0, 255, 0), fontScale=1, thickness=3)
 
                     # draw ellipse at feet
                     axes = (int((x_max - x_min) * 0.4), int((x_max - x_min) * 0.2))
@@ -130,10 +129,10 @@ class VolleyballPipeline:
                 out.write(frame)
 
             # display frame
-            # cv2.imshow('Volleyball Visualization', cv2.resize(frame, (1200, 780)))
-            cv2.imshow('Volleyball Visualization', cv2.resize(frame, (640, 640)))
-            if cv2.waitKey(7) & 0xFF == ord('q'):
-                break
+            if show:
+                cv2.imshow('Volleyball Visualization', cv2.resize(frame, (1200, 780)))
+                if cv2.waitKey(7) & 0xFF == ord('q'):
+                    break
             frame_id += 1
 
         cap.release()

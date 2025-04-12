@@ -17,4 +17,7 @@ if __name__ == '__main__':
 
     # Run pipeline
     pipeline = VolleyballPipeline(config)
-    pipeline.run()
+    data = pipeline.run()
+
+    # Visualize results
+    pipeline.visualize(*data, show=False, save=True)

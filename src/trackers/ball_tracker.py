@@ -96,6 +96,8 @@ class BallTracker:
             while True:
                 ret, frame = cap.read()
                 if not ret:
+                    # end of video
+                    pbar.close()
                     break
 
                 self.tracking_data["ball"][frame_id] = self.detect_ball(frame)
