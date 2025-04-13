@@ -93,6 +93,7 @@ docker run --rm -v $(pwd)/inputs:/workspace/inputs -v $(pwd)/outputs:/workspace/
 
 ## Demo
 ![Video demo](./outputs/videos/demo.gif)
+<p align="center">Demo video</p>
 ---
 Below is an example of the pipeline in action:  
 1. **Input Video**:  
