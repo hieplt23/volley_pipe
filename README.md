@@ -57,7 +57,7 @@ The pipeline consists of three main components:
 ### Clone the Repository
 ```bash
 git clone https://github.com/hieplt23/volley_pipe.git
-cd volleyball
+cd volley_pipe
 ```
 ### Install Dependencies
 If running locally:
